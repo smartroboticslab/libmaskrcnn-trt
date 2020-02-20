@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: 2020 Sotiris Papatheodorou
+# SPDX-License-Identifier: CC0-1.0
+
+# EditorConfig documentation:
+# https://EditorConfig.org
+
+root = true
+
+[*]
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+insert_final_newline = true
+max_line_length = 80
+
+[*.{c,h,cpp,hpp,md}]
+indent_style = space
+
+[*.{c,h,cpp,hpp}]
+trim_trailing_whitespace = true
+
