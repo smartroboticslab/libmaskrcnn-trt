@@ -35,16 +35,18 @@ To use the library you'll need to generate the Mask R-CNN Uff model by following
 
 ### Example executable
 
-An example executable is compiled along with the library. To run inference on an
-image you can run
+An example executable is compiled along with the library. To run inference on
+two images you can run
 
 ``` sh
-./build/release/maskrcnn-trt-example /PATH/TO/MODEL.uff /PATH/TO/IMAGE
+./build/release/maskrcnn-trt-example /PATH/TO/MODEL.uff /PATH/TO/IMAGE2 /PATH/TO/IMAGE2
 ```
 
-Information about the detected objects will be shown on standard output and a
-visualization will be created in `/PATH/TO/IMAGE.detections.png`. `IMAGE` can
-be in any image format supported by OpenCV.
+Information about the detected objects will be shown on standard output and
+visualizations will be created in `/PATH/TO/IMAGE1.detections.png` and
+`/PATH/TO/IMAGE2.detections.png`. The images can be in any format supported by
+OpenCV's
+[`cv::imread()`](https://docs.opencv.org/master/d4/da8/group__imgcodecs.html#ga288b8b3da0892bd651fce07b3bbd3a56).
 
 ### Notes
 
