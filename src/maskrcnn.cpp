@@ -67,6 +67,13 @@ namespace mr {
 
     std::vector<Detection> MaskRCNN::infer(const cv::Mat& rgb_image)
     {
+        // Ensure the network has been built before running inference.
+        if (!context_) {
+            gLogError << "Error: The network must be built using build() before running infer()"
+                << std::endl;
+            return std::vector<Detection>();
+        }
+
         // Read the input data into the host buffer.
         preprocessInput(*buffer_manager_, rgb_image);
 
