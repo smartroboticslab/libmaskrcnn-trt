@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2019 NVIDIA Corporation
 // SPDX-License-Identifier: Apache-2.0
 
-#include "logger.hpp"
+#include "maskrcnn_trt/logger.hpp"
 
 Logger gLogger{Logger::Severity::kINFO};
 LogStreamConsumer gLogVerbose{LOG_VERBOSE(gLogger)};

@@ -6,8 +6,8 @@
 
 #include <opencv2/imgproc.hpp>
 
-#include "detection.hpp"
-#include "maskrcnn_config.hpp"
+#include "maskrcnn_trt/detection.hpp"
+#include "maskrcnn_trt/maskrcnn_config.hpp"
 
 namespace mr {
     /** A detection as stored in host memory.

@@ -3,7 +3,7 @@
 // SPDX-FileCopyrightText: 2021 Sotiris Papatheodorou
 // SPDX-License-Identifier: Apache-2.0
 
-#include "maskrcnn_config.hpp"
+#include "maskrcnn_trt/maskrcnn_config.hpp"
 
 namespace mr {
     const std::string MaskRCNNConfig::model_input = "input_image";

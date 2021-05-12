@@ -6,7 +6,7 @@
 
 #include <opencv2/imgcodecs.hpp>
 
-#include "maskrcnn.hpp"
+#include "maskrcnn_trt/maskrcnn.hpp"
 
 int main(int argc, char** argv) {
     // Ensure the correct number of arguments was supplied.

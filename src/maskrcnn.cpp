@@ -4,8 +4,8 @@
 
 #include <opencv2/imgproc.hpp>
 
-#include "maskrcnn.hpp"
-#include "filesystem.hpp"
+#include "maskrcnn_trt/maskrcnn.hpp"
+#include "maskrcnn_trt/filesystem.hpp"
 
 namespace mr {
     MaskRCNN::MaskRCNN(const MaskRCNNConfig& config)
