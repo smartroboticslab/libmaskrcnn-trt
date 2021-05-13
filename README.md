@@ -35,6 +35,16 @@ To use the library you'll need to first download the Mask R-CNN UFF model
 was generated using
 [these instructions](https://github.com/NVIDIA/TensorRT/tree/master/samples/opensource/sampleUffMaskRCNN#generating-uff-model).
 
+### Using the library in your code
+
+First install the library using `sudo make install`. Then you can use
+`pkg-config` to get the flags needed to link libmaskrcnn-trt to your project.
+You can compile an executable using libmaskrcnn-trt like this:
+
+``` sh
+g++ $(pkg-config --cflags maskrcnn-trt) myprogram.cpp $(pkg-config --libs maskrcnn-trt)
+```
+
 ### Example executable
 
 An example executable is compiled along with the library. To run inference on
