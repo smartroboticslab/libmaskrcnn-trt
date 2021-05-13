@@ -30,7 +30,9 @@ Then run `make` to build the library and the example executable.
 
 ## Usage
 
-To use the library you'll need to generate the Mask R-CNN Uff model by following
+To use the library you'll need to first download the Mask R-CNN UFF model
+`mrcnn_nchw.uff` by running `make download-model` (requires `wget`). This model
+was generated using
 [these instructions](https://github.com/NVIDIA/TensorRT/tree/master/samples/opensource/sampleUffMaskRCNN#generating-uff-model).
 
 ### Example executable
@@ -39,7 +41,7 @@ An example executable is compiled along with the library. To run inference on
 two images you can run
 
 ``` sh
-./build/release/maskrcnn-trt-example /PATH/TO/MODEL.uff /PATH/TO/IMAGE2 /PATH/TO/IMAGE2
+./build/release/maskrcnn-trt-example mrcnn_nchw.uff /PATH/TO/IMAGE2 /PATH/TO/IMAGE2
 ```
 
 Information about the detected objects will be shown on standard output and

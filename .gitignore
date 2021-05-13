@@ -41,3 +41,6 @@ doc
 # vim temporary files
 *.swp
 
+# network models
+*.uff
+
