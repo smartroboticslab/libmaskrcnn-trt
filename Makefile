@@ -2,10 +2,14 @@
 # SPDX-FileCopyrightText: 2021 Sotiris Papatheodorou
 # SPDX-License-Identifier: Apache-2.0
 
+# Installation directories
 PREFIX ?= /usr/local
 _INSTDIR = $(DESTDIR)$(PREFIX)
 HEADERDIR ?= $(_INSTDIR)/include
 LIBDIR ?= $(_INSTDIR)/lib
+DATADIR ?= $(_INSTDIR)/share/
+# Pass the prefix to CMake so it can generate the pkg-config file.
+CMAKE_ARGUMENTS += -DMAKE_PREFIX=$(PREFIX)
 
 
 
@@ -38,7 +42,7 @@ clean:
 .PHONY: install
 install:
 	install -D -m 644 build/release/libmaskrcnn-trt.a $(LIBDIR)
-	install -D -m 644 -t $(HEADERDIR)/maskrcnn_trt \
+	install -D -m 644 -t $(HEADERDIR)/maskrcnn_trt/ \
 		include/maskrcnn_trt/buffers.hpp \
 		include/maskrcnn_trt/common.hpp \
 		include/maskrcnn_trt/detection.hpp \
@@ -48,9 +52,11 @@ install:
 		include/maskrcnn_trt/logging.hpp \
 		include/maskrcnn_trt/maskrcnn.hpp \
 		include/maskrcnn_trt/maskrcnn_config.hpp
+	install -D -m 644 -t $(DATADIR)/pkgconfig/ build/release/maskrcnn-trt.pc
 
 .PHONY: uninstall
 uninstall:
+	rm $(DATADIR)/pkgconfig/maskrcnn-trt.pc
 	rm $(LIBDIR)/libmaskrcnn-trt.a \
 		$(HEADERDIR)/maskrcnn_trt/buffers.hpp \
 		$(HEADERDIR)/maskrcnn_trt/common.hpp \

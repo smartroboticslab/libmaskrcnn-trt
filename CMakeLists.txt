@@ -5,7 +5,9 @@
 
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
-project(libmaskrcnn-trt LANGUAGES CXX CUDA)
+project(libmaskrcnn-trt VERSION 0.1.0
+	DESCRIPTION "Run Mask R-CNN using TensorRT"
+	LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -159,11 +161,8 @@ set_target_properties(${LIB_NAME}
 	LIBRARY_OUTPUT_DIRECTORY "${TRT_BIN_DIR}"
 )
 
-# Library Installation #########################################################
-install(TARGETS ${LIB_NAME}
-	LIBRARY DESTINATION lib
-	ARCHIVE DESTINATION lib
-)
+# Generate pkg-config file #####################################################
+configure_file(maskrcnn-trt.pc.in maskrcnn-trt.pc @ONLY)
 
 # Example executable ###########################################################
 add_executable(${LIB_NAME}-example src/maskrcnn_example.cpp)
