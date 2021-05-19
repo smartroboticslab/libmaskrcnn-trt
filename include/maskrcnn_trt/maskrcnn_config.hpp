@@ -23,9 +23,9 @@ namespace mr {
         /** Run the network in 16-bit float mode.
          */
         bool use_fp16 = false;
-        /** Use up to 2 GiB of VRAM for the workspace by default.
+        /** Use up to 1 GiB of VRAM for the workspace by default.
          */
-        size_t max_workspace_size = (1ULL << 31);
+        size_t max_workspace_size = (1ULL << 30);
 
 
 
