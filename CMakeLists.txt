@@ -13,8 +13,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-include(${CMAKE_SOURCE_DIR}/cmake/modules/find_library_create_target.cmake)
-include(${CMAKE_SOURCE_DIR}/cmake/modules/set_ifndef.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/find_library_create_target.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/set_ifndef.cmake)
 
 set_ifndef(TRT_BIN_DIR ${CMAKE_BINARY_DIR})
 set_ifndef(TRT_LIB_DIR ${CMAKE_BINARY_DIR})
