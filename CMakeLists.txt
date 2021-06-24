@@ -125,10 +125,8 @@ add_library(${LIB_NAME} STATIC
 	src/maskrcnn.cpp
 )
 
-set(CUDA_INSTALL_DIR /usr/local/cuda)
 target_include_directories(${LIB_NAME}
 	PUBLIC include
-	PUBLIC ${CUDA_INSTALL_DIR}/include
 	${OpenCV_INCLUDE_DIRS}
 )
 
