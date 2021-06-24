@@ -24,9 +24,13 @@ namespace mr {
             return false;
         }
         NVUniquePtr<IBuilderConfig> builder_config (builder->createBuilderConfig());
+        if (config_.use_fp16) {
+            builder_config->setFlag(nvinfer1::BuilderFlag::kFP16);
+        }
         builder_config->setMaxWorkspaceSize(config_.max_workspace_size);
 
-        auto network = NVUniquePtr<nvinfer1::INetworkDefinition>(builder->createNetwork());
+        auto network = NVUniquePtr<nvinfer1::INetworkDefinition>(
+                builder->createNetworkV2(static_cast<uint32_t>(nvinfer1::EngineCapability::kDEFAULT)));
         if (!network) {
             return false;
         }
@@ -115,7 +119,6 @@ namespace mr {
         }
 
         builder.setMaxBatchSize(config_.batch_size);
-        builder.setFp16Mode(config_.use_fp16);
 
         // Test if the a serialized model is available.
         if (!config_.serialized_model_filename.empty()
