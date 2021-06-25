@@ -130,8 +130,6 @@ target_include_directories(${LIB_NAME}
 	${OpenCV_INCLUDE_DIRS}
 )
 
-target_compile_options(${LIB_NAME} PUBLIC "-fno-rtti")
-
 set(DEP_LIBS
 	${CUDART_LIB}
 	${CUBLAS_LIB}
