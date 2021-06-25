@@ -16,18 +16,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/find_library_create_target.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/set_ifndef.cmake)
 
-set_ifndef(TRT_BIN_DIR ${CMAKE_BINARY_DIR})
-set_ifndef(TRT_LIB_DIR ${CMAKE_BINARY_DIR})
-
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
 	find_program(CMAKE_CXX_COMPILER NAMES $ENV{CXX} g++)
 endif()
 
 set(CMAKE_SKIP_BUILD_RPATH True)
-
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-	set(CMAKE_INSTALL_PREFIX ${TRT_LIB_DIR}/../ CACHE PATH "TensorRT installation" FORCE)
-endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 # Cross Compilation Settings ###################################################
 set_ifndef(TRT_PLATFORM_ID ${CMAKE_HOST_SYSTEM_PROCESSOR})
@@ -51,9 +44,7 @@ else()
 		# CUDA versions > 11.0
 		list(APPEND GPU_ARCHS 80)
 	else()
-		message(WARNING "Detected CUDA
-		version is < 11.0. SM80 not
-		supported.")
+		message(WARNING "Detected CUDA version is < 11.0. SM80 not supported.")
 	endif()
 	message(STATUS "GPU_ARCHS is not defined. Generating CUDA code for default SMs: ${GPU_ARCHS}")
 endif()
@@ -74,8 +65,8 @@ endif()
 set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -Xcompiler -Wno-deprecated-declarations")
 
 # Dependencies #################################################################
-set(DEFAULT_CUDA_VERSION 10.0)
-set(DEFAULT_CUDNN_VERSION 7.6)
+set(DEFAULT_CUDA_VERSION 10.2)
+set(DEFAULT_CUDNN_VERSION 8.1)
 set(DEFAULT_PROTOBUF_VERSION 3.0.0)
 set(DEFAULT_PROTOBUF_INTERNAL_VERSION 10.0)
 set(DEFAULT_CUB_VERSION 1.8.0)
@@ -96,9 +87,7 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
 	find_package(CUDA ${CUDA_VERSION} REQUIRED)
 endif()
 
-include_directories(
-	${CUDA_INCLUDE_DIRS}
-	${CUDNN_ROOT_DIR}/include)
+include_directories(${CUDA_INCLUDE_DIRS} ${CUDNN_ROOT_DIR}/include)
 find_library(CUDNN_LIB cudnn HINTS ${CUDA_TOOLKIT_ROOT_DIR} ${CUDNN_ROOT_DIR} PATH_SUFFIXES lib64 lib)
 find_library(CUBLAS_LIB cublas HINTS ${CUDA_TOOLKIT_ROOT_DIR} PATH_SUFFIXES lib64 lib lib/stubs)
 # CUBLASLT libraries are only available in CUDA versions > 10. Check for CUDA version here and
@@ -110,9 +99,9 @@ else()
 	find_library(CUBLASLT_LIB cublasLt HINTS ${CUDA_TOOLKIT_ROOT_DIR} PATH_SUFFIXES lib64 lib lib/stubs)
 endif()
 
-find_library_create_target(nvinfer nvinfer SHARED ${TRT_LIB_DIR})
-find_library_create_target(nvinfer_plugin nvinfer_plugin SHARED ${TRT_BIN_DIR} ${TRT_LIB_DIR})
-find_library_create_target(nvuffparser nvparsers SHARED ${TRT_LIB_DIR})
+find_library_create_target(nvinfer nvinfer SHARED ${CMAKE_BINARY_DIR})
+find_library_create_target(nvinfer_plugin nvinfer_plugin SHARED ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR})
+find_library_create_target(nvuffparser nvparsers SHARED ${CMAKE_BINARY_DIR})
 find_library(CUDART_LIB cudart HINTS ${CUDA_TOOLKIT_ROOT_DIR} PATH_SUFFIXES lib lib64)
 find_library(RT_LIB rt)
 
@@ -126,11 +115,13 @@ add_library(${LIB_NAME} STATIC
 )
 
 target_include_directories(${LIB_NAME}
-	PUBLIC include
-	${OpenCV_INCLUDE_DIRS}
+	PUBLIC
+		include
+		${OpenCV_INCLUDE_DIRS}
 )
 
-set(DEP_LIBS
+# Necessary to link nvinfer_plugin library.
+target_link_libraries(${LIB_NAME}
 	${CUDART_LIB}
 	${CUBLAS_LIB}
 	${CUDNN_LIB}
@@ -141,20 +132,15 @@ set(DEP_LIBS
 	${RT_LIB}
 	${CMAKE_DL_LIBS}
 	${CMAKE_THREAD_LIBS_INIT}
-)
-
-# Necessary to link nvinfer_plugin library.
-target_link_libraries(${LIB_NAME}
-	${DEP_LIBS}
 	stdc++fs
 	-Wl,--unresolved-symbols=ignore-in-shared-libs
 )
 
-set_target_properties(${LIB_NAME} PROPERTIES LINK_FLAGS "-Wl,--exclude-libs,ALL")
 set_target_properties(${LIB_NAME}
 	PROPERTIES
-	ARCHIVE_OUTPUT_DIRECTORY "${TRT_BIN_DIR}"
-	LIBRARY_OUTPUT_DIRECTORY "${TRT_BIN_DIR}"
+		LINK_FLAGS "-Wl,--exclude-libs,ALL"
+		ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+		LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 )
 
 # Generate pkg-config file #####################################################
