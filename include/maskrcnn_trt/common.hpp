@@ -72,7 +72,7 @@ struct InferDeleter
     {
         if (obj)
         {
-            obj->destroy();
+            delete obj;
         }
     }
 };
