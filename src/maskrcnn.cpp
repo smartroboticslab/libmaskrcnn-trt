@@ -139,7 +139,7 @@ namespace mr {
             f.read(buffer.data(), buffer.size());
             nvinfer1::IRuntime* runtime = createInferRuntime(gLogger);
             nvinfer1::ICudaEngine* engine = runtime->deserializeCudaEngine(
-                    reinterpret_cast<void*>(buffer.data()), buffer.size(), nullptr);
+                    reinterpret_cast<void*>(buffer.data()), buffer.size());
             runtime->destroy();
             if (!engine) {
                 gLogError << "Error: Could not create engine from serialized network model "
