@@ -87,7 +87,6 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
 	find_package(CUDA ${CUDA_VERSION} REQUIRED)
 endif()
 
-include_directories(${CUDA_INCLUDE_DIRS} ${CUDNN_ROOT_DIR}/include)
 find_library(CUDNN_LIB cudnn HINTS ${CUDA_TOOLKIT_ROOT_DIR} ${CUDNN_ROOT_DIR} PATH_SUFFIXES lib64 lib)
 find_library(CUBLAS_LIB cublas HINTS ${CUDA_TOOLKIT_ROOT_DIR} PATH_SUFFIXES lib64 lib lib/stubs)
 # CUBLASLT libraries are only available in CUDA versions > 10. Check for CUDA version here and
@@ -117,6 +116,8 @@ add_library(${LIB_NAME} STATIC
 target_include_directories(${LIB_NAME}
 	PUBLIC
 		include
+		${CUDA_INCLUDE_DIRS}
+		${CUDNN_ROOT_DIR}/include
 		${OpenCV_INCLUDE_DIRS}
 )
 
