@@ -69,7 +69,8 @@ namespace mr {
 
 
 
-    std::vector<Detection> MaskRCNN::infer(const cv::Mat& rgb_image)
+    std::vector<Detection> MaskRCNN::infer(const cv::Mat& rgb_image,
+                                           bool           in_bgr_order)
     {
         // Ensure the network has been built before running inference.
         if (!context_) {
@@ -79,7 +80,7 @@ namespace mr {
         }
 
         // Read the input data into the host buffer.
-        preprocessInput(*buffer_manager_, rgb_image);
+        preprocessInput(*buffer_manager_, rgb_image, in_bgr_order);
 
         // Copy image from the host input buffer to the device input buffer.
         buffer_manager_->copyInputToDevice();
@@ -179,7 +180,8 @@ namespace mr {
 
 
     void MaskRCNN::preprocessInput(const samplesCommon::BufferManager& buffer_manager,
-                                   const cv::Mat&                      rgb_image)
+                                   const cv::Mat&                      rgb_image,
+                                   bool                                in_bgr_order)
     {
         const int net_channels = input_dims_.d[0];
         const int net_height = input_dims_.d[1];
@@ -214,7 +216,9 @@ namespace mr {
         cv::resize(rgb_image, centre_image, centre_image.size());
 
         // Change the channel order from BGR to RGB.
-        cv::cvtColor(net_image, net_image, cv::COLOR_BGR2RGB);
+        if (in_bgr_order) {
+            cv::cvtColor(net_image, net_image, cv::COLOR_BGR2RGB);
+        }
 
         // The image data must be in continuous memory.
         if (!net_image.isContinuous()) {

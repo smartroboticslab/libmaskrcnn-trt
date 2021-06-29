@@ -26,10 +26,14 @@ namespace mr {
             bool build();
 
             /** Run inference on an RGB image and return the resulting
-             * detections. The image must be of type CV_8UC3 and in BGR order
-             * (the default in OpenCV).
+             * detections. The image must be of type CV_8UC3. Images are assumed
+             * to be in BGR order by default (the default in OpenCV) and are
+             * converted to RGB internally before being passed to the network.
+             * Set in_bgr_order to false to skip this conversion if rgb_image is
+             * already in RGB order.
              */
-            std::vector<Detection> infer(const cv::Mat& rgb_image);
+            std::vector<Detection> infer(const cv::Mat& rgb_image,
+                                         bool           in_bgr_order = true);
 
         private:
             template <typename T>
@@ -51,7 +55,8 @@ namespace mr {
             /** Resize, pad and copy the input image into the host input buffer.
              */
             void preprocessInput(const samplesCommon::BufferManager& buffer_manager,
-                                 const cv::Mat&                      rgb_image);
+                                 const cv::Mat&                      rgb_image,
+                                 bool                                in_bgr_order = true);
 
             /** TODO
              */
