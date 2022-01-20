@@ -141,7 +141,7 @@ namespace mr {
             nvinfer1::IRuntime* runtime = createInferRuntime(gLogger);
             nvinfer1::ICudaEngine* engine = runtime->deserializeCudaEngine(
                     reinterpret_cast<void*>(buffer.data()), buffer.size());
-            delete runtime;
+            runtime->destroy();
             if (!engine) {
                 gLogError << "Error: Could not create engine from serialized network model "
                     << config_.serialized_model_filename << std::endl;
@@ -164,7 +164,7 @@ namespace mr {
                 std::ofstream f (config_.serialized_model_filename, std::ios::binary);
                 if (f.is_open()) {
                     f.write(reinterpret_cast<char*>(serializedModel->data()), serializedModel->size());
-                    delete serializedModel;
+                    serializedModel->destroy();
                     gLogInfo << "Saved serialized network model to "
                         << config_.serialized_model_filename << std::endl;
                 } else {
