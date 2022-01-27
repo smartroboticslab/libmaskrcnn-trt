@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
     // Ensure the correct number of arguments was supplied.
     if (argc < 3) {
         std::cout << "maskrcnn-trt-example MODEL IMAGE...\n";
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
     // Setup the network configuration struct.
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     // Load and build the network. Error messages will be printed to standard
     // error if this fails.
     if (!network.build()) {
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     }
 
     // Run inference on each input image.
@@ -66,6 +66,6 @@ int main(int argc, char** argv) {
         std::cout << "\n";
     }
 
-    exit(EXIT_SUCCESS);
+    return EXIT_SUCCESS;
 }
 
