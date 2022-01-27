@@ -80,7 +80,7 @@ set_ifndef(PROTOBUF_VERSION ${DEFAULT_PROTOBUF_VERSION})
 message(STATUS "Protobuf version set to ${PROTOBUF_VERSION}")
 
 find_package(Threads REQUIRED)
-find_package(OpenCV REQUIRED COMPONENTS core imgproc imgcodecs)
+find_package(OpenCV REQUIRED COMPONENTS core imgproc imgcodecs videoio highgui)
 
 ## find_package(CUDA) is broken for cross-compilation. Enable CUDA language instead.
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
@@ -147,7 +147,10 @@ set_target_properties(${LIB_NAME}
 # Generate pkg-config file #####################################################
 configure_file(maskrcnn-trt.pc.in maskrcnn-trt.pc @ONLY)
 
-# Example executable ###########################################################
+# Executables ##################################################################
 add_executable(${LIB_NAME}-example src/maskrcnn_example.cpp)
 target_link_libraries(${LIB_NAME}-example ${LIB_NAME})
+
+add_executable(${LIB_NAME}-camera src/maskrcnn_camera.cpp)
+target_link_libraries(${LIB_NAME}-camera ${LIB_NAME})
 
