@@ -1,0 +1,6 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: libmaskrcnn-trt
+
+Files: README.md maskrcnn-trt.pc.in .editorconfig .gitignore
+Copyright: 2021-2023 Smart Robotics Lab, Imperial College London, Technical University of Munich
+License: CC0-1.0
