@@ -10,15 +10,18 @@
 #include "maskrcnn_trt/maskrcnn.hpp"
 
 int main(int argc, char** argv) {
+    const char *device = "/dev/video0";
     // Ensure the correct number of arguments was supplied.
-    if (argc < 3) {
-        std::cout << "maskrcnn-trt-camera MODEL DEVICE\n";
+    if (argc < 2 || argc > 3) {
+        std::cout << "maskrcnn-trt-camera MODEL [DEVICE]\n";
         return EXIT_FAILURE;
+    } else if (argc == 3) {
+        device = argv[2];
     }
 
-    cv::VideoCapture cap(argv[2]);
+    cv::VideoCapture cap(device);
     if(!cap.isOpened()) {
-        std::cout << "Error opening device " << argv[2] << "\n";
+        std::cout << "Error opening device " << device << "\n";
         return EXIT_FAILURE;
     }
 
