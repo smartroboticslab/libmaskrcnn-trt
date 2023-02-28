@@ -37,12 +37,18 @@ was generated using
 
 ### Using the library in your code
 
-First install the library using `sudo make install`. Then you can use
-`pkg-config` to get the flags needed to link libmaskrcnn-trt to your project.
-You can compile an executable using libmaskrcnn-trt like this:
+The recommended way is to incorporate this repository into your project (e.g. as
+a git submodule) and then add it as a subdirectory in your CMakeLists.txt, e.g.:
 
-``` sh
-g++ $(pkg-config --cflags maskrcnn-trt) myprogram.cpp $(pkg-config --libs maskrcnn-trt)
+``` cmake
+add_subdirectory(libmaskrcnn-trt)
+
+# Build a CMake target with libmaskrcnn-trt.
+target_include_directories(PUBLIC some-target libmaskrcnn-trt/include)
+target_link_libraries(some-target maskrcnn-trt)
+
+# Make sure to change the path to the libmaskrcnn-trt directory in
+# add_subdirectory() and target_include_directories() if needed.
 ```
 
 ### Example executable
@@ -69,7 +75,7 @@ OpenCV's
   a non-existent file. The serialized version will be loaded on subsequent runs
   instead of doing the conversion each time.
 - The first inference can take up to 2x more time than subsequent inferences.
- 
+
 
 
 ## License

@@ -108,8 +108,6 @@ set_target_properties(${LIB_NAME}
 		LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 )
 
-configure_file(maskrcnn-trt.pc.in maskrcnn-trt.pc @ONLY)
-
 
 
 # Executables ##################################################################
