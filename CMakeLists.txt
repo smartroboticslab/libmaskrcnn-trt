@@ -1,31 +1,33 @@
 # SPDX-FileCopyrightText: 2019 NVIDIA Corporation
-# SPDX-FileCopyrightText: 2021-2022 Smart Robotics Lab, Imperial College London
-# SPDX-FileCopyrightText: 2021-2022 Sotiris Papatheodorou
+# SPDX-FileCopyrightText: 2021-2023 Smart Robotics Lab, Imperial College London
+# SPDX-FileCopyrightText: 2021-2023 Sotiris Papatheodorou
 # SPDX-License-Identifier: Apache-2.0
 
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.10..3.16 FATAL_ERROR)
 
-project(libmaskrcnn-trt VERSION 0.1.0
+project(libmaskrcnn-trt
+	VERSION 0.1.0
 	DESCRIPTION "Run Mask R-CNN using TensorRT"
-	LANGUAGES CXX CUDA)
+	HOMEPAGE_URL "https://bitbucket.org/smartroboticslab/libmaskrcnn-trt"
+	LANGUAGES CXX CUDA
+)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+option(BUILD_EXAMPLES "Compile the libmaskrcnn-trt examples" ON)
 
 find_package(CUDA REQUIRED)
-find_package(OpenCV REQUIRED COMPONENTS core imgproc imgcodecs videoio highgui)
+find_package(OpenCV REQUIRED COMPONENTS core imgproc)
 
-if (DEFINED GPU_ARCHS)
+# CUDA setup ###################################################################
+if(DEFINED GPU_ARCHS)
 	message(STATUS "GPU_ARCHS defined as ${GPU_ARCHS}.")
 	separate_arguments(GPU_ARCHS)
 else()
 	list(APPEND GPU_ARCHS 35 53 61 70 75)
-	if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "aarch64")
+	if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "aarch64")
 		# Xavier (SM72) only supported for aarch64.
 		list(APPEND GPU_ARCHS 72)
 	endif()
-	if (CUDA_VERSION VERSION_GREATER_EQUAL "11.0")
+	if(CUDA_VERSION VERSION_GREATER_EQUAL "11.0")
 		# Ampere GPU (SM80) support is only available in CUDA versions > 11.0
 		list(APPEND GPU_ARCHS 80)
 	endif()
@@ -35,7 +37,7 @@ message(STATUS "Generating CUDA code for SM ${GPU_ARCHS}")
 set(BERT_GENCODES)
 # Generate SASS for each architecture
 foreach(arch ${GPU_ARCHS})
-	if (${arch} GREATER_EQUAL 70)
+	if(${arch} GREATER_EQUAL 70)
 		set(BERT_GENCODES "${BERT_GENCODES} -gencode arch=compute_${arch},code=sm_${arch}")
 	endif()
 	set(GENCODES "${GENCODES} -gencode arch=compute_${arch},code=sm_${arch}")
@@ -43,11 +45,11 @@ endforeach()
 # Generate PTX for the last architecture in the list.
 list(GET GPU_ARCHS -1 LATEST_SM)
 set(GENCODES "${GENCODES} -gencode arch=compute_${LATEST_SM},code=compute_${LATEST_SM}")
-if (${LATEST_SM} GREATER_EQUAL 70)
+if(${LATEST_SM} GREATER_EQUAL 70)
 	set(BERT_GENCODES "${BERT_GENCODES} -gencode arch=compute_${LATEST_SM},code=compute_${LATEST_SM}")
 endif()
 
-if (CUDA_VERSION VERSION_GREATER "10.0")
+if(CUDA_VERSION VERSION_GREATER "10.0")
 	find_library(CUBLASLT_LIB cublasLt HINTS ${CUDA_TOOLKIT_ROOT_DIR} PATH_SUFFIXES lib64 lib lib/stubs)
 else()
 	message(WARNING "CUDA version is <= 10.0, disabling BERT plugins.")
@@ -76,7 +78,6 @@ add_library(${LIB_NAME} STATIC
 	src/detection.cpp
 	src/maskrcnn.cpp
 )
-
 target_include_directories(${LIB_NAME}
 	PUBLIC
 		include
@@ -84,7 +85,6 @@ target_include_directories(${LIB_NAME}
 		${CUDNN_ROOT_DIR}/include
 		${OpenCV_INCLUDE_DIRS}
 )
-
 # Necessary to link nvinfer_plugin library.
 target_link_libraries(${LIB_NAME}
 	${CUDART_LIB}
@@ -100,7 +100,7 @@ target_link_libraries(${LIB_NAME}
 	stdc++fs
 	-Wl,--unresolved-symbols=ignore-in-shared-libs
 )
-
+target_compile_features(${LIB_NAME} PUBLIC cxx_std_17)
 set_target_properties(${LIB_NAME}
 	PROPERTIES
 		LINK_FLAGS "-Wl,--exclude-libs,ALL"
@@ -113,8 +113,15 @@ configure_file(maskrcnn-trt.pc.in maskrcnn-trt.pc @ONLY)
 
 
 # Executables ##################################################################
-add_executable(${LIB_NAME}-example src/maskrcnn_example.cpp)
-target_link_libraries(${LIB_NAME}-example ${LIB_NAME})
+if(BUILD_EXAMPLES)
+	# The example executables require more OpenCV components.
+	find_package(OpenCV REQUIRED COMPONENTS core imgproc imgcodecs videoio highgui)
 
-add_executable(${LIB_NAME}-camera src/maskrcnn_camera.cpp)
-target_link_libraries(${LIB_NAME}-camera ${LIB_NAME})
+	add_executable(${LIB_NAME}-example src/maskrcnn_example.cpp)
+	target_include_directories(${LIB_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS})
+	target_link_libraries(${LIB_NAME}-example ${LIB_NAME} ${OpenCV_LIBS})
+
+	add_executable(${LIB_NAME}-camera src/maskrcnn_camera.cpp)
+	target_include_directories(${LIB_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS})
+	target_link_libraries(${LIB_NAME}-camera ${LIB_NAME} ${OpenCV_LIBS})
+endif()
