@@ -5,8 +5,9 @@ A C++17 library for easily running
 [NVIDIA TensorRT](https://developer.nvidia.com/tensorrt).
 
 
-
 ## Build
+
+Requirements:
 
 - An NVIDIA GPU (tested on an NVIDIA Jetson Xavier NX).
 - A CUDA installation (tested on CUDA 10.2).
@@ -14,7 +15,7 @@ A C++17 library for easily running
 - A C++17 compatible compiler (tested on gcc 7.5.0 on Ubuntu 18.04).
 - OpenCV 4
 - CMake
-- Make
+- Make (optional, for convenience)
 
 To install CUDA and TensorRT follow the
 [instructions from NVIDIA](https://docs.nvidia.com/deeplearning/tensorrt/install-guide/index.html).
@@ -24,8 +25,7 @@ To install the other dependencies on Debian/Ubuntu run
 sudo apt install g++ make cmake libopencv-dev
 ```
 
-Then run `make` to build the library and the example executable.
-
+Then run `make` to build the library and the example executables.
 
 
 ## Usage
@@ -75,7 +75,11 @@ OpenCV's
   a non-existent file. The serialized version will be loaded on subsequent runs
   instead of doing the conversion each time.
 - The first inference can take up to 2x more time than subsequent inferences.
-
+- On newer versions of TensorRT some of the functions used in libmaskrcnn-trt
+  have been deprecated. The code was retained as is for compatibility with
+  TensorRT 7 which is the only version currently officially supported on the
+  Jetson Xavier NX. To suppress the deprecation warnings you can pass the
+  `-Wno-deprecated-declarations` option to the compiler.
 
 
 ## License
@@ -92,4 +96,3 @@ in the TensorRT repository.
 
 Many thanks to ivanhc for their help in
 [this issue](https://github.com/NVIDIA/TensorRT/issues/490).
-
