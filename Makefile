@@ -14,4 +14,4 @@ clean:
 	rm -rf build
 
 download-model:
-	wget https://www.doc.ic.ac.uk/~sleutene/software/mrcnn_nchw.uff
+	wget -O - https://github.com/smartroboticslab/libmaskrcnn-trt/releases/download/v1.0.0/mrcnn_nchw.uff.gz | gunzip -c > mrcnn_nchw.uff
