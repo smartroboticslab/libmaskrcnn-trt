@@ -6,7 +6,7 @@
 cmake_minimum_required(VERSION 3.10..3.16 FATAL_ERROR)
 
 project(libmaskrcnn-trt
-	VERSION 0.1.0
+	VERSION 1.0.0
 	DESCRIPTION "Run Mask R-CNN using TensorRT"
 	HOMEPAGE_URL "https://bitbucket.org/smartroboticslab/libmaskrcnn-trt"
 	LANGUAGES CXX CUDA
